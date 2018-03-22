@@ -1,0 +1,14 @@
+{
+    "name": "mso-server",
+    "version": "0.1.0",
+    "scripts": {
+        "start": "node index"
+    },
+    "devDependencies": {},
+    "dependencies": {
+        "body-parser": "^1.18.2",
+        "express": "^4.16.2",
+        "helmet": "^3.12.0",
+        "mongoose": "^5.0.11"
+    }
+}
