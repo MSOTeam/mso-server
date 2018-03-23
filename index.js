@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet')
 
+require('./config/database');
+
 const app = express();
 const port = process.env.PORT || 5000;
 
