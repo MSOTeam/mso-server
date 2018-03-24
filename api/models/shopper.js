@@ -5,8 +5,14 @@ var Schema = mongoose.Schema;
 var ShopperSchema = new Schema(
   {
     first_name: {type: String, required: true, max: 100},
-    last_name: {type: String, required: true, max: 100},
-    date_of_birth: {type: Date},    
+    last_name: {type: String, required: true, max: 100},    
+    email: {type: String, required: true, max: 100},
+    price: {type: Number},
+    about: {type: String},
+    instagram: {type: String},
+    // styles: {type: []},
+    // assists_with:
+    //availability     
   }
 );
 
