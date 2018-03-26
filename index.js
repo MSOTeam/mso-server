@@ -18,5 +18,6 @@ app.use(bodyParser.json());
 app.use(helmet());
 
 require('./api/shopper.js')(app);
+require('./api/client.js')(app);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

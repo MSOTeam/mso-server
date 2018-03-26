@@ -7,13 +7,13 @@ var ShopperSchema = new Schema(
     first_name: {type: String, required: true, max: 100},
     last_name: {type: String, required: true, max: 100},    
     email: {type: String, required: true, max: 100},
-    // location
+    city: {type: String},
     price: {type: Number},
     about: {type: String},
     instagram: {type: String},    
-    // styles: {type: []},
-    // assists_with:
-    //availability     
+    styles: {type: []},
+    assists_with: {type: []},
+    calendar: {type: []},
   }
 );
 

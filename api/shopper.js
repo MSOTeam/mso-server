@@ -15,7 +15,7 @@ module.exports = function(app) {
   });
 
   app.get('/api/shopper', (req, res) => {
-    Shopper.find({}, 'price about', function (err, shoppers) {
+    Shopper.find({}, 'price about instagram styles assists_with calendar', function (err, shoppers) {
       if (err) { 
         res.status(500).send(err)
       }
