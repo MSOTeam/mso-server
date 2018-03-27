@@ -1,4 +1,4 @@
-var Shopper = require('./models/shopper');
+var Shopper = require('../models/shopper');
 
 module.exports = function(app) {
       

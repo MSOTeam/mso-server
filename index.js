@@ -2,8 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet')
 
-require('./config/database');
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -17,7 +15,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(helmet());
 
-require('./api/shopper.js')(app);
-require('./api/client.js')(app);
+require('./config/database');
+require('./passport');
+
+const auth = require('./routes/auth');
+app.use('/auth', auth);
+
+// require('./routes/auth.js')(app);
+require('./routes/shopper.js')(app);
+require('./routes/client.js')(app);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
