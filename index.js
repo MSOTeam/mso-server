@@ -19,10 +19,12 @@ require('./config/database');
 require('./passport');
 
 const auth = require('./routes/auth');
-app.use('/auth', auth);
+const shopper = require('./routes/shopper.js');
+const client = require('./routes/client.js');
 
-// require('./routes/auth.js')(app);
-require('./routes/shopper.js')(app);
-require('./routes/client.js')(app);
+app.use('/auth', auth);
+app.use('/client', client);
+app.use('/shopper', shopper);
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

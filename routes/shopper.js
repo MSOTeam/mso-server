@@ -1,26 +1,26 @@
+const express = require('express');
+const router  = express.Router();
 var Shopper = require('../models/shopper');
-
-module.exports = function(app) {
       
-  app.post('/api/shopper', (req, res) => {     
-    var shopper = new Shopper (req.body.shopper);    
-    shopper.save(
-      function (err) {
-        if (err) {
-           res.status(500).send(err);
-        }
-        res.send({ shopper });
-      }
-    );    
-  });
-
-  app.get('/api/shopper', (req, res) => {
-    Shopper.find({}, 'price about instagram styles assists_with calendar', function (err, shoppers) {
-      if (err) { 
-        res.status(500).send(err)
+router.post('/shopper', (req, res, next) => {
+  var shopper = new Shopper(req.body.shopper);
+  shopper.save(
+    function (err) {
+      if (err) {
+        res.status(500).send(err);
       }
       res.send({ shopper });
-    });
-  })
+    }
+  );
+});
 
-};
+router.get('/shopper', (req, res, next) => {
+  Shopper.find({}, 'price about instagram styles assists_with calendar', function (err, shoppers) {
+    if (err) {
+      res.status(500).send(err)
+    }
+    res.send({ shopper });
+  });
+})
+
+module.exports = router;
