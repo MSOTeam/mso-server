@@ -4,12 +4,10 @@ var Schema = mongoose.Schema;
 
 var ClientSchema = new Schema(
   {
-    auth_type: {type: String, required: true},
-    username: {type: String, required: true, unique: true},
+    email: {type: String, required: true, unique: true, max: 100},    
     password: {type: String},
     first_name: {type: String, required: true, max: 100},
-    last_name: {type: String, required: true, max: 100},    
-    email: {type: String, required: true, max: 100},
+    last_name: {type: String, required: true, max: 100},        
     looking_for: {type: []},
     styles: {type: []},
     budget: {type: Number},

@@ -1,6 +1,10 @@
 const express = require('express');
 const router  = express.Router();
+const passport = require('passport');
+
 var Shopper = require('../models/client');
+
+// passport.authenticate(['basic', 'digest'], { session: false })
    
 router.post('/', (req, res, next) => {
   var client = new Client(req.body.client);
@@ -14,7 +18,7 @@ router.post('/', (req, res, next) => {
   );
 });
 
-router.get('/', (req, res, next) => {
+router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   Client.find({}, 'looking_for styles budget hours occupation', function (err, shoppers) {
     if (err) {
       res.status(500).send(err)
@@ -23,7 +27,7 @@ router.get('/', (req, res, next) => {
   });
 });
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   Client.findOne({ _id: req.params.uid }, 'looking_for styles budget hours occupation', function (err, shoppers) {
     if (err) {
       res.status(500).send(err)
