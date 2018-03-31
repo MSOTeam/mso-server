@@ -6,6 +6,7 @@ var ShopperSchema = new Schema(
   {
     email: {type: String, required: true, unique: true, max: 100},
     password: {type: String},
+    status:{type: String},
     first_name: {type: String, required: true, max: 100},
     last_name: {type: String, required: true, max: 100},    
     city: {type: String},

@@ -4,7 +4,7 @@ const passport = require('passport');
 var Shopper = require('../models/shopper');
       
 router.post('/', (req, res, next) => {
-  var shopper = new Shopper(req.body.shopper);
+  var shopper = new Shopper(req.body);
   shopper.save(
     function (err) {
       if (err) {

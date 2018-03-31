@@ -2,12 +2,12 @@ const express = require('express');
 const router  = express.Router();
 const passport = require('passport');
 
-var Shopper = require('../models/client');
+var Client = require('../models/client');
 
 // passport.authenticate(['basic', 'digest'], { session: false })
    
-router.post('/', (req, res, next) => {
-  var client = new Client(req.body.client);
+router.post('/', (req, res, next) => {  
+  var client = new Client(req.body);  
   client.save(
     function (err) {
       if (err) {
