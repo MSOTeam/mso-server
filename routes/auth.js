@@ -18,8 +18,8 @@ router.post('/login', (req, res, next) => {
                res.send(err);
            }
 
-           const token = jwt.sign(user.toJSON(), 'jwt_secret');        
-           return res.json({token});
+           const token = jwt.sign(user.toJSON(), 'jwt_secret', { expiresIn: "15m" });        
+           return res.json({user, token});
         });
     })(req, res);
 });
