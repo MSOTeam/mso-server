@@ -15,6 +15,13 @@ router.post('/', (req, res, next) => {
   );
 });
 
+router.put('/', (req, res, next) => {
+  console.log()
+  // Shopper.findByIdAndUpdate(req.params.id, req.body, function (err, shopper) {
+  //   res.send(shopper);
+  // });
+});
+
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   Shopper.find({}, 'price about instagram styles assists_with calendar', function (err, shoppers) {
     if (err) {
