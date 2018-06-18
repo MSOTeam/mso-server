@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 
 var ShopperSchema = new Schema(
   {
-    email: {type: String, unique: true},    
+    email: {type: String, unique: true, max: 100},    
     password: {type: String},
     facebook: { type: String },
     google: { type: String },

@@ -3,11 +3,13 @@ const router  = express.Router();
 const passport = require('passport');
 var Shopper = require('../models/shopper');
       
-router.post('/', (req, res, next) => {
+router.post('/', (req, res, next) => {  
   var shopper = new Shopper(req.body);
+  console.log(req.body);
   shopper.save(
     function (err) {
       if (err) {
+        console.log(err);
         res.status(500).send(err);
       }
       res.send({ shopper });

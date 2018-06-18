@@ -6,8 +6,8 @@ const ExtractJWT = passportJWT.ExtractJwt;
 
 const OAuth2Strategy = require('passport-oauth2').Strategy;
 
-
 var Client = require('../models/client');
+var Shopper = require('../models/shopper');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -24,7 +24,7 @@ passport.use(new LocalStrategy({
     passwordField: 'password'
 }, 
 function (email, password, done) {
-    return Client.findOne({email})
+    return Shopper.findOne({email})
        .then(user => {
            if (!user) {
                return done(null, false, {message: 'Incorrect email or password.'});
