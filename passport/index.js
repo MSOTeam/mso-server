@@ -4,6 +4,9 @@ const passportJWT = require("passport-jwt");
 const JWTStrategy   = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
+const OAuth2Strategy = require('passport-oauth2').Strategy;
+
+
 var Client = require('../models/client');
 
 passport.serializeUser((user, done) => {
@@ -53,4 +56,18 @@ function (jwtPayload, cb) {
             return cb(err);
         });
 }
+));
+
+passport.use(new OAuth2Strategy({
+    authorizationURL: 'https://localhost:5000/auth/authorize',
+    tokenURL: 'https://localhost:5000/auth/token',
+    clientID: '317827366745-tkf2ndf7ujaeur4mu26bvi5u4l2ts6li.apps.googleusercontent.com ',
+    clientSecret: 'gx5jJk7dNQdvgQJ9pgHQY15_',
+    callbackURL: "http://localhost:5000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    // User.findOrCreate({ exampleId: profile.id }, function (err, user) {
+    //   return cb(err, user);
+    // });
+  }
 ));
