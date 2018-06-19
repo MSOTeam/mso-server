@@ -1,15 +1,14 @@
 const express = require('express');
 const router  = express.Router();
 const passport = require('passport');
+var jwt = require('jsonwebtoken');
 var Shopper = require('../models/shopper');
       
 router.post('/', (req, res, next) => {  
-  var shopper = new Shopper(req.body);
-  console.log(req.body);
+  const shopper = new Shopper(req.body);
   shopper.save(
     function (err) {
-      if (err) {
-        console.log(err);
+      if (err) {        
         res.status(500).send(err);
       }
       res.send({ shopper });
@@ -18,18 +17,25 @@ router.post('/', (req, res, next) => {
 });
 
 router.put('/', (req, res, next) => {
-  console.log()
-  // Shopper.findByIdAndUpdate(req.params.id, req.body, function (err, shopper) {
-  //   res.send(shopper);
-  // });
+  const token = req.headers.authorization;
+  const shopper = jwt.verify(token, 'jwt_secret');
+
+  Shopper.findByIdAndUpdate(shopper._id, { $set: { profile: req.body }}, { new: true }, function (err, shopper) {
+    if (err) {        
+      res.status(500).send(err);
+    }
+    res.send({ shopper });
+  });  
 });
 
-router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-  Shopper.find({}, 'price about instagram styles assists_with calendar', function (err, shoppers) {
+// router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+router.get('/', (req, res, next) => {
+  Shopper.find({}, 'profile', function (err, shoppers) {
     if (err) {
       res.status(500).send(err)
     }
-    res.send({ shopper });
+    console.log(shoppers);
+    res.send({ shoppers });
   });
 })
 
