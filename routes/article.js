@@ -25,7 +25,16 @@ router.post('/', (req, res, next) => {
       }
     );  
   });
+});
 
+router.get('/', (req, res, next) => {
+  Article.find({}, 'title content length', function (err, articles) {
+    if (err) {
+      res.status(500).send(err)
+    }
+    // console.log(shoppers);
+    res.send({ articles });
+  });
 });
 
 module.exports = router;
