@@ -9,11 +9,9 @@ const JSDOMParser = readability.JSDOMParser;
 
 var Article = require('../models/article');
 
-router.get('/', (req, res, next) => {
-
-  const url = 'https://www.mbl.is/sport/frettir/2018/08/30/aaron_rodgers_launahaesti_leikmadur_i_sogu_nfl/';
+router.post('/', (req, res, next) => {
   
-  JSDOM.fromURL(url, {}).then(dom => {
+  JSDOM.fromURL(req.body.url, {}).then(dom => {
     const document = dom.window.document;
     var scrapedArticle = new Readability(document).parse();
 
@@ -25,11 +23,8 @@ router.get('/', (req, res, next) => {
         }
         res.send({ article });
       }
-    );
-    
-    // res.send(article);
+    );  
   });
-
 
 });
 
