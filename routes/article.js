@@ -28,13 +28,22 @@ router.post('/', (req, res, next) => {
 });
 
 router.get('/', (req, res, next) => {
-  Article.find({}, 'title content length', function (err, articles) {
+  Article.find({}, 'title content length excerpt', function (err, articles) {
     if (err) {
       res.status(500).send(err)
-    }
-    // console.log(shoppers);
+    }    
     res.send({ articles });
   });
 });
+
+router.get('/:id', (req, res, next) => {  
+  Article.findOne({_id: req.params.id}, 'title content length', function (err, article) {
+    if (err) {
+      res.status(500).send(err)
+    }    
+    res.send({ article });
+  });
+});
+
 
 module.exports = router;
