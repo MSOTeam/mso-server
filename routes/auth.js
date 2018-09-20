@@ -3,6 +3,20 @@ const router  = express.Router();
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
+const { generateToken, sendToken } = require('../utils/token');
+
+router.route('/auth/google')
+    .post(passport.authenticate('google-token', {session: false}), function(req, res, next) {
+        if (!req.user) {
+            return res.send(401, 'User Not Authenticated');
+        }
+        req.auth = {
+            id: req.user.id
+        };
+
+        next();
+}, generateToken, sendToken);
+
 router.post('/login', (req, res, next) => {
 
     passport.authenticate(['local'], {session: false}, (err, user, info) => {        
@@ -22,7 +36,6 @@ router.post('/login', (req, res, next) => {
            return res.json({user, token});
         });
     })(req, res);
-
 });
 
 module.exports = router;
