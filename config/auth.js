@@ -2,7 +2,7 @@ module.exports = {
     'facebookAuth' : {
         'clientID'      : '327203661179854',
         'clientSecret'  : 'tagit',
-        'callbackURL'     : 'http://localhost:5000/api/auth/facebook/callback',
+        'callbackURL'     : 'http://localhost:5000/auth/facebook/callback',
         'profileURL': 'https://graph.facebook.com/v2.5/me?fields=first_name,last_name,email'
     },
     'googleAuth' : {

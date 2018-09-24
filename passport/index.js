@@ -4,19 +4,20 @@ const GoogleTokenStrategy = require('passport-google-token').Strategy;
 const User = require('../models/user');
 const config = require('../config/auth');
 
-module.exports = function () {
+// module.exports = function () {
 
     passport.use(new GoogleTokenStrategy({
             clientID: config.googleAuth.clientID,
             clientSecret: config.googleAuth.clientSecret
         },
         function (accessToken, refreshToken, profile, done) {
+            console.log('sd');
             User.upsertGoogleUser(accessToken, refreshToken, profile, function(err, user) {
                 return done(err, user);
             });
         }
     ));
-};
+// };
 
 
 // var passport = require('passport');
@@ -33,7 +34,7 @@ module.exports = function () {
 // passport.serializeUser((user, done) => {
 //   done(null, user.id);
 // });
-  
+
 // passport.deserializeUser((id, done) => {
 //   User.findById(id, (err, user) => {
 //     done(err, user);
@@ -43,7 +44,7 @@ module.exports = function () {
 // passport.use(new LocalStrategy({
 //     usernameField: 'email',
 //     passwordField: 'password'
-// }, 
+// },
 // function (email, password, done) {
 //     return Shopper.findOne({email})
 //        .then(user => {
@@ -68,7 +69,7 @@ module.exports = function () {
 //     secretOrKey: 'jwt_secret',
 // },
 // function (jwtPayload, cb) {
-    
+
 //     return Client.findOneById(jwtPayload.id)
 //         .then(user => {
 //             return cb(null, user);

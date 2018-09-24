@@ -5,15 +5,26 @@ const passport = require('passport');
 
 const { generateToken, sendToken } = require('../utils/token');
 
-router.route('/auth/google')
-    .post(passport.authenticate('google-token', {session: false}), function(req, res, next) {
+// router.post('/google', (req, res, next) => {
+//     console.log(req.body);
+//     passport.authenticate('google-token', {session: false}), (err, user, info) => {
+//         console.log('test');
+//        console.log(user);
+
+//        next();
+//     }
+//  }, generateToken, sendToken);
+
+
+router.route('/google')
+    .post(passport.authenticate('google-token', {session: false}), function(req, res, next) {        
+        console.log(req.user);
         if (!req.user) {
             return res.send(401, 'User Not Authenticated');
         }
         req.auth = {
             id: req.user.id
         };
-
         next();
 }, generateToken, sendToken);
 
