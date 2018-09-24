@@ -3,15 +3,14 @@ const jwt = require('jsonwebtoken');
 var createToken = function(auth) {
     return jwt.sign({
             id: auth.id
-        }, 'my-secret',
+        }, 'tagit',
         {
             expiresIn: 60 * 120
         });
 };
 
 module.exports = {
-  generateToken: function(req, res, next) {
-      console.log('gen');
+  generateToken: function(req, res, next) {      
       req.token = createToken(req.auth);
       return next();
   },
