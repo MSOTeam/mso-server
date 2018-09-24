@@ -1,23 +1,31 @@
 const passport = require('passport');
 const GoogleTokenStrategy = require('passport-google-token').Strategy;
+var FacebookTokenStrategy = require('passport-facebook-token');
 
 const User = require('../models/user');
 const config = require('../config/auth');
 
-// module.exports = function () {
 
-    passport.use(new GoogleTokenStrategy({
-            clientID: config.googleAuth.clientID,
-            clientSecret: config.googleAuth.clientSecret
-        },
-        function (accessToken, refreshToken, profile, done) {
-            console.log('sd');
-            User.upsertGoogleUser(accessToken, refreshToken, profile, function(err, user) {
-                return done(err, user);
-            });
-        }
-    ));
-// };
+passport.use(new GoogleTokenStrategy({
+        clientID: config.googleAuth.clientID,
+        clientSecret: config.googleAuth.clientSecret
+    },
+    function (accessToken, refreshToken, profile, done) {
+        User.upsertGoogleUser(accessToken, refreshToken, profile, function(err, user) {
+            return done(err, user);
+        });
+    }
+));
+
+passport.use(new FacebookTokenStrategy({
+    clientID: config.facebookAuth.clientID,
+    clientSecret: config.facebookAuth.clientSecret
+},
+function (accessToken, refreshToken, profile, done) {
+    User.upsertFbUser(accessToken, refreshToken, profile, function(err, user) {
+        return done(err, user);
+    });
+}));
 
 
 // var passport = require('passport');
