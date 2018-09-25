@@ -18,6 +18,13 @@ var UserSchema = new Schema(
         },
         select: false
     },
+    facebookProvider: {
+        type: {
+            id: String,
+            token: String
+        },
+        select: false
+    },
     password: {type: String},    
     first_name: {type: String, max: 100},
     last_name: {type: String, max: 100},    
@@ -29,27 +36,44 @@ var UserSchema = new Schema(
 
 
 UserSchema.statics.upsertGoogleUser = function(accessToken, refreshToken, profile, cb) {
-    var that = this;
+    
     return this.findOne({
         'googleProvider.id': profile.id
-    }, function(err, user) {
-        // no user was found, lets create a new one
+    }, (err, user) => {
+        
         if (!user) {
-            var newUser = new that({
-                fullName: profile.displayName,
-                email: profile.emails[0].value,
-                googleProvider: {
-                    id: profile.id,
-                    token: accessToken
-                }
-            });
+            // no google user was found, check email    
+            this.findOne({'email': profile.emails[0].value})
+             .then((user) => {
+               // update if user email exists, else create
+                if(user) {
+                    const googleProvider = { 
+                        id: profile.id,
+                        token: accessToken 
+                    };
+                    this.findOneAndUpdate({'email': profile.emails[0].value}, { googleProvider })
+                     .then((updatedUser) => cb(null, updatedUser))
+                     .catch((error) => cb(error, {}))                     
+                } else {
+                     var newUser = new this({
+                        fullName: profile.displayName,
+                        email: profile.emails[0].value,
+                        googleProvider: {
+                            id: profile.id,
+                            token: accessToken
+                        }
+                    });
 
-            newUser.save(function(error, savedUser) {
-                if (error) {
-                    console.log(error);
+                    newUser.save((error, savedUser) => {
+                        if (error) {
+                            console.log(error);
+                        }
+                        return cb(error, savedUser);
+                    });        
                 }
-                return cb(error, savedUser);
-            });
+              })
+              .catch((error) => cb(error, {}));        
+
         } else {
             return cb(err, user);
         }
@@ -57,27 +81,43 @@ UserSchema.statics.upsertGoogleUser = function(accessToken, refreshToken, profil
 };
 
 UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, cb) {
-    var that = this;
+    
     return this.findOne({
         'facebookProvider.id': profile.id
-    }, function(err, user) {
-        // no user was found, lets create a new one
+    }, (err, user) => {
+        // no user was found, check email
         if (!user) {
-            var newUser = new that({
-                fullName: profile.displayName,
-                email: profile.emails[0].value,
-                facebookProvider: {
-                    id: profile.id,
-                    token: accessToken
-                }
-            });
+            this.findOne({'email': profile.emails[0].value})
+            .then((user) => {
+               // update if user email exists, else create
+               if(user) {
+                   const facebookProvider = { 
+                      id: profile.id,
+                      token: accessToken
+                   };
+                   this.findOneAndUpdate({'email': profile.emails[0].value}, { facebookProvider })
+                    .then((updatedUser) => cb(null, updatedUser))
+                    .catch((error) => cb(error, {}))                     
+               } else {
+                   var newUser = new this({
+                        fullName: profile.displayName,
+                        email: profile.emails[0].value,
+                        facebookProvider: {
+                            id: profile.id,
+                            token: accessToken
+                        }
+                   });
 
-            newUser.save(function(error, savedUser) {
-                if (error) {
-                    console.log(error);
-                }
-                return cb(error, savedUser);
-            });
+                   newUser.save((error, savedUser) => {
+                       if (error) {
+                           console.log(error);
+                       }
+                       return cb(error, savedUser);
+                   });        
+               }
+             })
+             .catch((error) => cb(error, {}));      
+
         } else {
             return cb(err, user);
         }

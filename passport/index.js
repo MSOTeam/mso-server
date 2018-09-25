@@ -23,6 +23,7 @@ passport.use(new FacebookTokenStrategy({
 },
 function (accessToken, refreshToken, profile, done) {
     User.upsertFbUser(accessToken, refreshToken, profile, function(err, user) {
+        console.log(err);
         return done(err, user);
     });
 }));
