@@ -124,6 +124,25 @@ UserSchema.statics.upsertFbUser = function(accessToken, refreshToken, profile, c
     });
 };
 
+UserSchema.pre('save', function save(next) {
+    const client = this;    
+    if (!client.isModified('password')) { return next(); }
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) { return next(err); }
+      bcrypt.hash(client.password, salt, null, (err, hash) => {
+        if (err) { return next(err); }
+        client.password = hash;
+        next();
+      });
+    });
+});
+
+UserSchema.methods.comparePassword = (candidatePassword, cb) => {  
+  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {    
+    cb(err, isMatch);
+  });
+};
+
 
 UserSchema.set('toJSON', {getters: true, virtuals: true});
 
