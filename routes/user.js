@@ -19,10 +19,6 @@ router.post('/', (req, res, next) => {
                 .catch((error) => res.status(500).json(error))             
             });
         });
-
-        // User.findOneAndUpdate({ email }, { password })
-        // .then((updatedUser) => res.send({ updatedUser }))
-        // .catch((error) => res.status(500).json(error))
        } else {
         const newUser = new User(req.body);      
         newUser.save(

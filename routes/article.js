@@ -1,5 +1,6 @@
 const express = require('express');
 const jsdom = require("jsdom");
+const passport = require('passport');
 const readability = require('../utils/readability/index');
 
 const router  = express.Router();
@@ -27,7 +28,23 @@ router.post('/', (req, res, next) => {
   });
 });
 
-router.get('/', (req, res, next) => {
+// router.get('/', function(req, res, next) {
+//   passport.authenticate('google-token', function(err, user, info) {
+//     console.log(err, user, info);
+//     if (err) { return next(err); }
+//     if (!user) { return res.redirect('/login'); }
+//     req.logIn(user, function(err) {
+//       if (err) { return next(err); }
+//       return res.redirect('/users/' + user.username);
+//     });
+//   })(req, res, next);
+// });
+
+// router.get('/', (req, res, next) => {
+// router.get('/', passport.authenticate('google-token', {session: false}), (req, res, next) => {
+// router.get('/', (req, res, next) => {
+
+router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {        
   Article.find({}, 'title content length excerpt', function (err, articles) {
     if (err) {
       res.status(500).send(err)
