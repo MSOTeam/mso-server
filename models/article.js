@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ArticleSchema = new Schema(
-  {            
+  {
+    user: {type: String},            
     title: {type: String},
     content: { type: String },
     length: { type: String },
