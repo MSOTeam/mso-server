@@ -10,8 +10,7 @@ const JSDOMParser = readability.JSDOMParser;
 
 var Article = require('../models/article');
 
-router.post('/', (req, res, next) => {
-  
+router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {  
   JSDOM.fromURL(req.body.url, {}).then(dom => {
     const document = dom.window.document;
     var scrapedArticle = new Readability(document).parse();
