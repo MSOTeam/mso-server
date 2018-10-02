@@ -10,7 +10,8 @@ var ArticleSchema = new Schema(
     length: { type: String },
     excerpt: { type: String },
     byline: { type: String },
-    dir: { type: String },     
+    dir: { type: String },
+    tags: { type: Array },     
   },
   { 
     timestamps: true, 

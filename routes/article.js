@@ -17,6 +17,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 
     const article = new Article(scrapedArticle);
     article.user = req.user._id;
+    article.tags = JSON.parse(req.body.tags);
     article.save(
       function (err) {
         if (err) {        
@@ -29,7 +30,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 });
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {  
-  Article.find({user: req.user._id}, 'title content length excerpt', function (err, articles) {
+  Article.find({user: req.user._id}, 'title content length excerpt tags', function (err, articles) {
     if (err) {
       res.status(500).send(err)
     }    
@@ -38,7 +39,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next)
 });
 
 router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {  
-  Article.findOne({_id: req.params.id}, 'title content length', function (err, article) {
+  Article.findOne({_id: req.params.id}, 'title content length tags', function (err, article) {
     if (err) {
       res.status(500).send(err)
     }    
