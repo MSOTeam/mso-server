@@ -36,7 +36,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next)
     if (err) {
       res.status(500).send(err)
     }    
-    res.send({ articles });
+    res.send({ articles });    
   });
 });
 
