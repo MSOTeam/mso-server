@@ -12,6 +12,9 @@ var ArticleSchema = new Schema(
     byline: { type: String },
     dir: { type: String },
     tags: { type: Array },     
+    url: { type : String },
+    image: { type : String },
+
   },
   { 
     timestamps: true, 
