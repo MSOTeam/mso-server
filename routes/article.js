@@ -25,6 +25,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
     art.tags = JSON.parse(req.body.tags);
     art.url = req.body.url;
     art.image = article.image;
+    art.length = article.duration;
     art.save(
       function (err) {       
         if (err) {        
@@ -39,7 +40,7 @@ return;
 });
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {  
-  Article.find({user: req.user._id}, 'image title content length excerpt tags', function (err, articles) {
+  Article.find({user: req.user._id}, 'image title content length excerpt tags createdAt', function (err, articles) {
     console.log(articles);
     
     if (err) {

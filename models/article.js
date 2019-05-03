@@ -14,7 +14,7 @@ var ArticleSchema = new Schema(
     tags: { type: Array },     
     url: { type : String },
     image: { type : String },
-
+    length: { type : Number },
   },
   { 
     timestamps: true, 
