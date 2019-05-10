@@ -56,7 +56,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next)
       res.status(500).send(err)
     }    
     res.send({ articles });    
-  });
+  }).sort( { createdAt: -1 } );
 });
 
 router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {  
@@ -67,6 +67,5 @@ router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, ne
     res.send({ article });
   });
 });
-
 
 module.exports = router;
