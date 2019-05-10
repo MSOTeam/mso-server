@@ -41,12 +41,14 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
   return;
 });
 
+
 router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-  Article.findByIdAndUpdate({ _id: req.body.id }, { set: { content: req.body.content }}, (err, res) => {
+
+  Article.findByIdAndUpdate({ _id: req.body.id }, { $set: { content: req.body.content }}, (err, article) => {
     if (err) {
-      res.status(500).send(err)
+      res.status(500).send(err);
     }
-    res.send({ res });
+    res.send({ 'asd': 'asd' });
   });
 });
 
