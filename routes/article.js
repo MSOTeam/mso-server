@@ -9,14 +9,27 @@ const extractor = require('unfluff');
 const router  = express.Router();
 const { extract } = require('article-parser');
 
-var Article = require('../models/article');
+const Article = require('../models/article');
+const Tag = require('../models/tag'); 
 
 router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   read(req.body.url, (err, art, options, resp) => {
-    if(err){
-      throw err;
+    if(err) {
+      res.status(500).send(err);
     }
-    let url = req.body.url;
+    const url = req.body.url;
+    
+    const tags = [];
+    JSON.parse(req.body.tags).forEach(tag => {
+      tags.push({ user: req.user._id, tag });
+    });
+
+    Tag.create(tags, (err) => {
+      if (err) {        
+        // res.status(500).send(err);
+        console.log(err);
+      }
+    });
 
     extract(url).then((article) => {
       const art = new Article();
@@ -38,6 +51,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
       );
     });
   });
+
   return;
 });
 
@@ -48,7 +62,7 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
     if (err) {
       res.status(500).send(err);
     }
-    res.send({ 'asd': 'asd' });
+    res.send({ article });
   });
 });
 
