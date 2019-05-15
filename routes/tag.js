@@ -14,3 +14,5 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next)
         res.send({ tags });    
     });
 });
+
+module.exports = router;
