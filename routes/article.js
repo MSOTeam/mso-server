@@ -66,8 +66,15 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
   });
 });
 
-router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {  
-  Article.find({user: req.user._id}, 'image title content length excerpt tags createdAt', (err, articles) => {    
+router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  
+  const query = { user: req.user.id };
+
+  if(req.query.tag) {
+    query.tags = req.query.tag;
+  }
+  
+  Article.find(query, 'image title content length excerpt tags createdAt', (err, articles) => {    
     if (err) {
       res.status(500).send(err)
     }    
