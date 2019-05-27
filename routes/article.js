@@ -38,7 +38,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
       art.content = article.content;
       art.original = article.content;
       art.tags = JSON.parse(req.body.tags);
-      art.url = req.body.url;
+      art.url = url;
       art.image = article.image;
       art.length = article.duration;
       art.save(
@@ -47,6 +47,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
             res.status(500).send(err);
           }
           res.send({ art });
+          console.log(art);
         }
       );
     });
@@ -83,7 +84,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next)
 });
 
 router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {  
-  Article.findOne({_id: req.params.id}, 'title content length tags image', (err, article) => {
+  Article.findOne({_id: req.params.id}, 'title content length tags image url', (err, article) => {
     if (err) {
       res.status(500).send(err)
     }    
