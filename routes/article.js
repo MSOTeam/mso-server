@@ -5,12 +5,39 @@ const readability = require('../utils/readability/index');
 var read = require('read-art');
 const extractor = require('unfluff');
 
+const { JSDOM } = jsdom;
+const Readability = readability.Readability;
+const JSDOMParser = readability.JSDOMParser;
 
 const router  = express.Router();
 const { extract } = require('article-parser');
 
 const Article = require('../models/article');
 const Tag = require('../models/tag'); 
+
+
+
+// router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {    
+//   JSDOM.fromURL(req.body.url, {}).then(dom => {
+//     const document = dom.window.document;
+//     var scrapedArticle = new Readability(document).parse();
+
+//     const article = new Article(scrapedArticle);
+//     article.user = req.user._id;
+//     article.tags = JSON.parse(req.body.tags);
+//     article.url = req.body.url;
+    
+//     article.save(
+//       function (err) {
+//         if (err) {        
+//           res.status(500).send(err);
+//         }
+//         res.send({ article });
+//       }
+//     );  
+//   });
+// });
+
 
 router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   read(req.body.url, (err, art, options, resp) => {
@@ -30,27 +57,36 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
         console.log(err);
       }
     });
+    
+    JSDOM.fromURL(req.body.url, {}).then(dom => {
+      const document = dom.window.document;      
+      const readabilityArticle = new Readability(document).parse();
 
-    extract(url).then((article) => {
-      const art = new Article();
-      art.user = req.user._id;
-      art.title = article.title;
-      art.content = article.content;
-      art.original = article.content;
-      art.tags = JSON.parse(req.body.tags);
-      art.url = url;
-      art.image = article.image;
-      art.length = article.duration;
-      art.save(
-        (err) => {       
-          if (err) {        
-            res.status(500).send(err);
+      console.log(readabilityArticle);
+
+      extract(url).then((article) => {
+        const art = new Article();
+        art.user = req.user._id;
+        art.title = readabilityArticle.title;
+        art.content = readabilityArticle.content;
+        art.original = readabilityArticle.content;
+        art.tags = JSON.parse(req.body.tags);
+        art.url = url;
+        art.image = article.image;
+        art.length = article.duration;
+        art.save(
+          (err) => {       
+            if (err) {        
+              res.status(500).send(err);
+            }
+            res.send({ art });
+            // console.log(art);
           }
-          res.send({ art });
-          console.log(art);
-        }
-      );
+        );
+      });      
     });
+
+    
   });
 
   return;
