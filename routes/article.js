@@ -88,8 +88,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
         );
       });
     });
-
-
   });
 
   return;
@@ -98,10 +96,22 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 
 router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
 
-  Article.findByIdAndUpdate({ _id: req.body.id }, { $set: { content: req.body.content }}, (err, article) => {
-    if (err) {
-      res.status(500).send(err);
-    }
+  const { article, id } = req.body;
+
+  Article.findByIdAndUpdate(
+    {
+      _id: id
+    },
+    {
+      $set: {
+        content: article.content,
+        tags: article.tags,
+      }
+    },
+    (err, article) => {
+      if (err) {
+        res.status(500).send(err);
+      }
     res.send({ article });
   });
 });

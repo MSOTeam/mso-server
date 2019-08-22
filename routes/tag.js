@@ -15,7 +15,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next)
     });
 });
 
-router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+router.post('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
     const tags = [];
     JSON.parse(req.body.tags).forEach(tag => {
       tags.push({ user: req.user._id, tag });
@@ -26,6 +26,10 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
         res.status(500).send(err);
       }
     });
+});
+
+router.delete('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+
 });
 
 module.exports = router;
