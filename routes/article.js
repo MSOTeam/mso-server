@@ -56,7 +56,12 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 
     Tag.create(tags, (err) => {
       if (err) {
-        res.status(500).send(err);
+        // ignore unique constraint error
+        if(err.code !== 11000) {
+          res.status(500).send(err);
+        }
+        console.log(err);
+        // res.status(500).send(err);
       }
     });
 
@@ -77,14 +82,19 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
         art.image = article.image;
         art.length = article.duration;
 
-        art.on('index', function (err) {
-          if (err) console.error(err);
-        })
+        // art.on('index', function (err) {
+        //   if (err) console.error(err);
+        // })
 
         art.save(
           (err) => {
             if (err) {
-              res.status(500).send(err);
+              if(err.code === 11000) {
+                // custom error message for unique article, ignore now to avoid crash
+                console.log(err.code);
+              } else {
+                res.status(500).send(err);
+              }
             }
             res.send({ art });
             // console.log(art);
