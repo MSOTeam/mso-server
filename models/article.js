@@ -5,37 +5,25 @@ var Schema = mongoose.Schema;
 
 var ArticleSchema = new Schema(
   {
-    user: {type: String, required: true},            
-    title: {type: String},
+    user: { type: String, required: true },
+    title: { type: String },
     content: { type: String },
     length: { type: String },
     excerpt: { type: String },
     byline: { type: String },
     dir: { type: String },
-    tags: { type: Array },     
-    url: { type : String },
+    tags: { type: Array },
+    url: { type : String, required: true },
     image: { type : String },
     length: { type : Number },
   },
-  { 
-    timestamps: true, 
+  {
+    timestamps: true,
   }
 );
 
-ArticleSchema.pre('save', (next) => {
 
-  next();
-  // const client = this;    
-  // if (!client.isModified('password')) { return next(); }
-  // bcrypt.genSalt(10, (err, salt) => {
-  //   if (err) { return next(err); }
-  //   bcrypt.hash(client.password, salt, null, (err, hash) => {
-  //     if (err) { return next(err); }
-  //     client.password = hash;
-      
-  //   });
-  // });
-});
+ArticleSchema.index({ user: 1, url: 1 }, { unique: true });
 
 module.exports = mongoose.model('Article', ArticleSchema);
 

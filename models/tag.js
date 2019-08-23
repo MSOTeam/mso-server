@@ -4,11 +4,11 @@ var Schema = mongoose.Schema;
 
 var TagSchema = new Schema(
   {
-    user: {type: String, required: true}, 
+    user: {type: String, required: true},
     tag: { type: String },
   },
-  { 
-    timestamps: true, 
+  {
+    timestamps: true,
   }
 );
 

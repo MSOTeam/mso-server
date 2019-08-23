@@ -56,8 +56,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 
     Tag.create(tags, (err) => {
       if (err) {
-        // res.status(500).send(err);
-        console.log(err);
+        res.status(500).send(err);
       }
     });
 
@@ -77,6 +76,11 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
         art.url = url;
         art.image = article.image;
         art.length = article.duration;
+
+        art.on('index', function (err) {
+          if (err) console.error(err);
+        })
+
         art.save(
           (err) => {
             if (err) {
@@ -117,7 +121,6 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
 });
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-
   const query = { user: req.user.id };
 
   if(req.query.tag) {
