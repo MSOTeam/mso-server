@@ -5,12 +5,12 @@ var createToken = function(auth) {
             id: auth.id
         }, 'tagit',
         {
-            expiresIn: 60 * 120
+            // expiresIn: 60 * 120
         });
 };
 
 module.exports = {
-  generateToken: function(req, res, next) {          
+  generateToken: function(req, res, next) {
       req.token = createToken(req.auth);
       return next();
   },
