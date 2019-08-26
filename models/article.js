@@ -22,6 +22,7 @@ var ArticleSchema = new Schema(
   }
 );
 
+ArticleSchema.index({ content: 'text' });
 
 ArticleSchema.index({ user: 1, url: 1 }, { unique: true });
 

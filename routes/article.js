@@ -131,15 +131,23 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
 });
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-  const query = { user: req.user.id };
-
+  let query = { user: req.user.id };
+  const {tag, text} = req.query;
   if(req.query.tag) {
     query.tags = req.query.tag;
   }
 
-  Article.find(query, 'image title content length excerpt tags createdAt', (err, articles) => {
+  if(req.query.text) {
+     query.$text = { $search: req.query.text };
+    // query = { ...query, $text: { $search: req.query.text }};
+  }
+
+  // console.log(query);
+
+  Article.find(query, 'image title url content length excerpt tags createdAt', (err, articles) => {
     if (err) {
-      res.status(500).send(err)
+      // res.status(500).send(err)
+      console.log(err);
     }
     res.send({ articles });
   }).sort( { createdAt: -1 } );
