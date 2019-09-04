@@ -43,9 +43,6 @@ const Tag = require('../models/tag');
 
 
 router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-  var io = req.app.get('socketio');;
-
-  io.emit('article', { socket:  "new article" });
 
   read(req.body.url, (err, art, options, resp) => {
     if(err) {
@@ -100,6 +97,8 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
                 res.status(500).send(err);
               }
             }
+            var io = req.app.get('socketio');;
+            io.emit('article', { socket:  "new article" });
             res.send({ art });
             // console.log(art);
           }
