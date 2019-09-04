@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Tag = require('./tag');
 
 var Schema = mongoose.Schema;
 
@@ -22,7 +21,7 @@ var ArticleSchema = new Schema(
   }
 );
 
-ArticleSchema.index({ content: 'text' });
+ArticleSchema.index({ "content": "text", "title": "text", "tags": "text" });
 
 ArticleSchema.index({ user: 1, url: 1 }, { unique: true });
 

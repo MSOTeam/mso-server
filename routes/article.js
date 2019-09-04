@@ -43,6 +43,10 @@ const Tag = require('../models/tag');
 
 
 router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  var io = req.app.get('socketio');;
+
+  io.emit('article', { socket:  "new article" });
+
   read(req.body.url, (err, art, options, resp) => {
     if(err) {
       res.status(500).send(err);
@@ -133,16 +137,13 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   let query = { user: req.user.id };
   const {tag, text} = req.query;
-  if(req.query.tag) {
+  if (req.query.tag) {
     query.tags = req.query.tag;
   }
 
-  if(req.query.text) {
+  if (req.query.text) {
      query.$text = { $search: req.query.text };
-    // query = { ...query, $text: { $search: req.query.text }};
   }
-
-  // console.log(query);
 
   Article.find(query, 'image title url content length excerpt tags createdAt', (err, articles) => {
     if (err) {

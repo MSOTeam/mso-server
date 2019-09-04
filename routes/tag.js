@@ -28,6 +28,10 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res, ne
     });
 });
 
+router.put('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+
+});
+
 router.delete('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
 
 });
