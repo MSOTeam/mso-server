@@ -14,17 +14,18 @@ const port = process.env.PORT || 5000;
 const whitelist = ['http://localhost:3000', 'https://tagit-api.herokuapp.com'];
 
 var corsOption = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
+  // origin: function (origin, callback) {
+  //   if (whitelist.indexOf(origin) !== -1) {
+  //     callback(null, true)
+  //   } else {
+  //     callback(new Error('Not allowed by CORS'))
+  //   }
+  // },
   // origin: 'https://tagit-api.herokuapp.com',
+  origin: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: false,
-  exposedHeaders: ['x-auth-token'],
+  credentials: true,
+  exposedHeaders: ['x-auth-token', 'Access-Control-Allow-Origin'],
   allowHeaders: ['Authorization', 'Content-Type', 'Origin', 'X-Requested-With', 'Accept'],
 };
 app.use(cors(corsOption));
