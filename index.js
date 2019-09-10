@@ -11,22 +11,25 @@ require('./passport');
 const app = express();
 const port = process.env.PORT || 5000;
 
-const whitelist = ['http://localhost:3000'];
+const whitelist = ['http://localhost:3000', 'https://tagit-api.herokuapp.com'];
 
 var corsOption = {
-  // origin: (origin, callback) => {
-  //   if (whitelist.includes(origin)) {
-  //     return callback(null, true);
-  //   }
-  //   callback(new Error('Not allowed by CORS'));
-  // },
-  origin: 'https://tagit-api.herokuapp.com',
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  // origin: 'https://tagit-api.herokuapp.com',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: false,
   exposedHeaders: ['x-auth-token'],
   allowHeaders: ['Authorization', 'Content-Type', 'Origin', 'X-Requested-With', 'Accept'],
 };
 app.use(cors(corsOption));
+
+app.options('*', cors())
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
