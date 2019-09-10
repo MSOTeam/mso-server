@@ -20,7 +20,7 @@ var corsOption = {
   //   }
   //   callback(new Error('Not allowed by CORS'));
   // },
-  origin: '*',
+  origin: 'https://tagit-api.herokuapp.com',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: false,
   exposedHeaders: ['x-auth-token'],
