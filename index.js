@@ -28,15 +28,26 @@ var corsOption = {
   exposedHeaders: ['x-auth-token', 'Access-Control-Allow-Origin'],
   allowHeaders: ['Authorization', 'Content-Type', 'Origin', 'X-Requested-With', 'Accept'],
 };
-app.use(cors(corsOption));
+// app.use(cors(corsOption));
+// app.options('*', cors());
 
-app.options('*', cors());
+app.use(function(req, res, next) {
+  if (req.headers.origin) {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type,Authorization');
+      res.header('Access-Control-Allow-Methods', 'GET,PUT,PATCH,POST,DELETE');
+      if (req.method === 'OPTIONS'){
+        return res.send(200);
+      }
+  }
+  next();
+});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // app.use(helmet());
 
-app.use(helmet.permittedCrossDomainPolicies())
+// app.use(helmet.permittedCrossDomainPolicies())
 
 require('./routes')(app, passport);
 
