@@ -30,11 +30,13 @@ var corsOption = {
 };
 app.use(cors(corsOption));
 
-app.options('*', cors())
+app.options('*', cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(helmet());
+// app.use(helmet());
+
+app.use(helmet.permittedCrossDomainPolicies())
 
 require('./routes')(app, passport);
 
