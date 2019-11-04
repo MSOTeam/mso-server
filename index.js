@@ -11,7 +11,7 @@ require('./passport');
 const app = express();
 const port = process.env.PORT || 5000;
 
-const whitelist = ['http://localhost:3000', 'https://tagit-api.herokuapp.com'];
+const whitelist = ['http://localhost:3000', 'https://tagit-api.herokuapp.com', 'https://tagit-client.herokuapp.com'];
 
 var corsOption = {
   // origin: function (origin, callback) {
