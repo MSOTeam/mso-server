@@ -11,25 +11,28 @@ require('./passport');
 const app = express();
 const port = process.env.PORT || 5000;
 
-const whitelist = ['http://localhost:3000', 'https://tagit-api.herokuapp.com', 'https://tagit-client.herokuapp.com'];
+const origin = [
+  'http://localhost:3000',
+  'https://tagit-api.herokuapp.com',
+  'https://tagit-client.herokuapp.com',
+  'http://tagit.dev.io:3000'
+];
 
-var corsOption = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
-  // origin: 'https://tagit-api.herokuapp.com',
-  // origin: true,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+// app.use(function(req, res, next) {
+//   if (origin.indexOf(req.get('origin')) !== -1) {
+//     res.header("Access-Control-Allow-Origin", req.get('origin'));
+//   }  
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
+
+app.use(cors({
+  origin,
   credentials: true,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   exposedHeaders: ['x-auth-token', 'Access-Control-Allow-Origin'],
   allowHeaders: ['Authorization', 'Content-Type', 'Origin', 'X-Requested-With', 'Accept'],
-};
-
-app.use(cors(corsOption));
+}));
 
 // app.options('*', cors());
 
@@ -37,7 +40,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // app.use(helmet());
-// app.use(helmet.permittedCrossDomainPolicies())
+app.use(helmet.permittedCrossDomainPolicies())
 
 require('./routes')(app, passport);
 
@@ -45,7 +48,6 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 app.set('socketio', io);
-
 
 io.on("connection", socket => {
   // console.log("New client connected");
@@ -55,5 +57,3 @@ io.on("connection", socket => {
 });
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
-
-// app.listen(port, () => console.log(`Listening on port ${port}`));
