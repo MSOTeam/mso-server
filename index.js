@@ -18,14 +18,6 @@ const origin = [
   'http://tagit.dev.io:3000'
 ];
 
-// app.use(function(req, res, next) {
-//   if (origin.indexOf(req.get('origin')) !== -1) {
-//     res.header("Access-Control-Allow-Origin", req.get('origin'));
-//   }  
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
 app.use(cors({
   origin,
   credentials: true,
@@ -34,7 +26,6 @@ app.use(cors({
   allowHeaders: ['Authorization', 'Content-Type', 'Origin', 'X-Requested-With', 'Accept'],
 }));
 
-// app.options('*', cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

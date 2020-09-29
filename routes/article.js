@@ -19,29 +19,6 @@ const Article = require('../models/article');
 const Tag = require('../models/tag');
 
 
-
-// router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-//   JSDOM.fromURL(req.body.url, {}).then(dom => {
-//     const document = dom.window.document;
-//     var scrapedArticle = new Readability(document).parse();
-
-//     const article = new Article(scrapedArticle);
-//     article.user = req.user._id;
-//     article.tags = JSON.parse(req.body.tags);
-//     article.url = req.body.url;
-
-//     article.save(
-//       function (err) {
-//         if (err) {
-//           res.status(500).send(err);
-//         }
-//         res.send({ article });
-//       }
-//     );
-//   });
-// });
-
-
 router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
 
   read(req.body.url, (err, art, options, resp) => {
@@ -100,7 +77,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
             var io = req.app.get('socketio');;
             io.emit('article', { socket:  "new article" });
             res.send({ art });
-            // console.log(art);
           }
         );
       });
