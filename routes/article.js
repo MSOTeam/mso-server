@@ -1,12 +1,9 @@
 const express = require('express');
 const jsdom = require("jsdom");
 const passport = require('passport');
-// const cleanup = require('jsdom-global')()
 const readability = require('../utils/readability/index');
 var read = require('read-art');
-const extractor = require('unfluff');
 
-// const Parser = require('../utils/parser/safari');
 
 const { JSDOM } = jsdom;
 const Readability = readability.Readability;
