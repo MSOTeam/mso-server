@@ -127,7 +127,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next)
 });
 
 router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-  Article.findOne({_id: req.params.id}, 'title content length tags image url', (err, article) => {
+  Article.findOne({ _id: req.params.id, user: req.user.id }, 'title content length tags image url', (err, article) => {
     if (err) {
       res.status(500).send(err)
     }
