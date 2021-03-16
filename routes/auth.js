@@ -3,26 +3,43 @@ const router  = express.Router();
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
-router.post('/login', (req, res, next) => {
+const { generateToken, sendToken } = require('../utils/token');
 
-    passport.authenticate(['local'], {session: false}, (err, user, info) => {        
-        if (err || !user) {
-            return res.status(400).json({
-                message: 'Something is not right',
-                user: user
-            });
+
+router.route('/google')
+    .post(passport.authenticate('google-token', {session: false}), function(req, res, next) {
+        if (!req.user) {
+            return res.send(401, 'User Not Authenticated');
         }
+        req.auth = {
+            id: req.user.id
+        };
+        next();
+}, generateToken, sendToken);
 
-       req.login(user, {session: false}, (err) => {
-           if (err) {
-               res.send(err);
-           }
+router.route('/fb')
+    .post(passport.authenticate('facebook-token', {session: false}), function(req, res, next) {
+        if (!req.user) {
+            return res.send(401, 'User Not Authenticated');
+        }
+        req.auth = {
+            id: req.user.id
+        };
 
-           const token = jwt.sign(user.toJSON(), 'jwt_secret', { expiresIn: "15m" });        
-           return res.json({user, token});
-        });
-    })(req, res);
+        next();
+}, generateToken, sendToken);
 
-});
+
+router.route('/email')
+    .post(passport.authenticate('local', {session: false}), function(req, res, next) {
+        if (!req.user) {
+            return res.send(401, 'User Not Authenticated');
+        }
+        req.auth = {
+            id: req.user.id
+        };
+
+        next();
+}, generateToken, sendToken);
 
 module.exports = router;

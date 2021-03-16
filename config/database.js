@@ -1,8 +1,8 @@
 var mongoose = require ("mongoose");
-  
-var mongoDB = process.env.MONGOLAB_URI || 
-"mongodb://mso:mso123ebu@ds029715.mlab.com:29715/heroku_z32776sz";;
-mongoose.connect(mongoDB);
+
+var mongoDB = process.env.MONGOLAB_URI ||
+"mongodb+srv://bearwolf:KillThemAll21!@ds243388-x5mk4.mongodb.net/tagit?retryWrites=true&w=majority";
+mongoose.connect(mongoDB,  { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
