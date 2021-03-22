@@ -2,13 +2,13 @@ const express = require('express');
 const jsdom = require("jsdom");
 const passport = require('passport');
 // const readability = require('../utils/readability/index');
-const readability = require('./../utils/readability/index.js');
-var read = require('read-art');
+// const readability = require('./../utils/readability/index.js');
+// var read = require('read-art');
 
 
 const { JSDOM } = jsdom;
 const Readability = readability.Readability;
-const JSDOMParser = readability.JSDOMParser;
+// const JSDOMParser = readability.JSDOMParser;
 
 const router  = express.Router();
 const { extract } = require('article-parser');

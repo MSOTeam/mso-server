@@ -6,7 +6,7 @@ var url = require("url");
 // and so we need to do some hocus-pocus with 'vm' to import them on a separate scope
 // (identical) scope context.
 var vm = require("vm");
-var readabilityPath = path.join(__dirname, "Readability.js");
+var readabilityPath = path.join(__dirname, "readability.js");
 var jsdomPath = path.join(__dirname, "JSDOMParser.js");
 
 
