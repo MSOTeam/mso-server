@@ -1,5 +1,5 @@
 {
-    "name": "mso-server",
+    "name": "tagit-server",
     "version": "0.1.0",
     "scripts": {
         "start": "node index"

@@ -1,7 +1,7 @@
 const express = require('express');
 const jsdom = require("jsdom");
 const passport = require('passport');
-const readability = require('../utils/readability/index');
+const readability = require('~/utils/readability/index');
 var read = require('read-art');
 
 
@@ -50,8 +50,8 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
         const art = new Article();
         art.user = req.user._id;
         art.title = readabilityArticle.title;
-        art.content = readabilityArticle.content;
-        art.original = readabilityArticle.content;
+        // art.content = readabilityArticle.content;
+        // art.original = readabilityArticle.content;
         art.tags = JSON.parse(req.body.tags);
         art.url = url;
         art.image = article.image;
