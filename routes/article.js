@@ -2,7 +2,7 @@ const express = require('express');
 const jsdom = require("jsdom");
 const passport = require('passport');
 // const readability = require('../utils/readability/index');
-const readability = require('./utils/readability/index');
+const readability = require('./../utils/readability/index.js');
 var read = require('read-art');
 
 
