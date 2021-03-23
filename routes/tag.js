@@ -75,7 +75,6 @@ router.put('/', passport.authenticate('jwt', { session: false }), (req, res, nex
     });
   })
   .catch((error) => {
-    console.log(error);
     res.status(500).json(error)
   });
   

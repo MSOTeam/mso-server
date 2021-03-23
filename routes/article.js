@@ -2,8 +2,11 @@ const express = require('express');
 const jsdom = require("jsdom");
 const passport = require('passport');
 // const readability = require('../utils/readability/index');
-const readability = require('./../utils/readability/index.js');
+// const readability = require('./../utils/readability/index.js');
 var read = require('read-art');
+
+const request = require('request');
+const cheerio = require('cheerio');
 
 
 const { JSDOM } = jsdom;
@@ -41,29 +44,51 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
       }
     });
 
-    JSDOM.fromURL(req.body.url, {}).then(dom => {
-      const document = dom.window.document;
-      // const readabilityArticle = new Readability(document).parse();
+    request(req.body.url, function (error, response, responseHtml) {
+      var resObj = {};
 
-      extract(url).then((article) => {
-        const art = new Article();
-        art.user = req.user._id;
-        //art.title = readabilityArticle.title;
-        // art.content = readabilityArticle.content;
-        // art.original = readabilityArticle.content;
-        art.tags = JSON.parse(req.body.tags);
-        art.url = url;
+      //if there was an error
+      if (error) {
+        res.status(500).send(error);
+        return;
+      }
 
-        console.log(article);
-        if(article) {
-          art.title = article.title;
-          art.image = article.image;
-          art.length = article.duration;
-        }
+      $ = cheerio.load(responseHtml);
 
-        // art.on('index', function (err) {
-        //   if (err) console.error(err);
-        // })
+      const art = new Article();
+
+      art.user = req.user._id;
+      art.tags = JSON.parse(req.body.tags);
+      art.url = url;
+
+      art.title = $('meta[property="og:title"]').attr('content');
+      art.image = $('meta[property="og:image"]').attr('content');
+
+    // });  
+
+    // JSDOM.fromURL(req.body.url, {}).then(dom => {
+    //   const document = dom.window.document;
+    //   // const readabilityArticle = new Readability(document).parse();
+
+    //   extract(url).then((article) => {
+    //     const art = new Article();
+    //     art.user = req.user._id;
+    //     //art.title = readabilityArticle.title;
+    //     // art.content = readabilityArticle.content;
+    //     // art.original = readabilityArticle.content;
+    //     art.tags = JSON.parse(req.body.tags);
+    //     art.url = url;
+
+    //     console.log(article);
+    //     if(article) {
+    //       art.title = article.title;
+    //       art.image = article.image;
+    //       art.length = article.duration;
+    //     }
+
+    //     // art.on('index', function (err) {
+    //     //   if (err) console.error(err);
+    //     // })
 
         art.save(
           (err) => {
@@ -80,7 +105,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
             res.send({ art });
           }
         );
-      });
+      // });
     // });
   });
 
