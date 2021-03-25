@@ -137,22 +137,28 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   let query = { user: req.user.id };
-  const {tag, text} = req.query;
-  if (req.query.tag) {
-    query.tags = req.query.tag;
+  let {tag, text} = req.query;
+  if (tag) {
+    query.tags = tag;
+  }
+  
+  if (!text) {    
+    text = '';
   }
 
-  if (req.query.text) {
-     query.$text = { $search: req.query.text };
-  }
-
-  Article.find(query, 'image title url content length excerpt tags createdAt', (err, articles) => {
+  //Article.find(query, 'image title url content length excerpt tags createdAt', (err, articles) => {
+    Article.find(query, 'image title url tags createdAt', (err, articles) => {
     if (err) {
       // res.status(500).send(err)
       console.log(err);
     }
     res.send({ articles });
-  }).sort( { createdAt: -1 } );
+  })
+  // .$where(() => {
+  //   return this.title.indexOf(text) !== -1
+  // })
+  .or([{ 'title': { $regex: text }}, { 'tags': { $elemMatch: { $regex: text }}}])
+  .sort( { createdAt: -1 } );
 });
 
 router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {
