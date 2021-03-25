@@ -154,10 +154,7 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next)
     }
     res.send({ articles });
   })
-  // .$where(() => {
-  //   return this.title.indexOf(text) !== -1
-  // })
-  .or([{ 'title': { $regex: text }}, { 'tags': { $elemMatch: { $regex: text }}}])
+  .or([{ 'title': { $regex: text, $options: 'i' }}, { 'tags': { $elemMatch: { $regex: text, $options: 'i' }}}])
   .sort( { createdAt: -1 } );
 });
 
