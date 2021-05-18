@@ -61,6 +61,14 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
       art.tags = JSON.parse(req.body.tags);
       art.url = url;
 
+      // var image = $('meta[property="og:image"]').attr('content');
+      // var icon = $('link[rel="icon"]');
+      // var shortcutIcon = $('link[rel="shortcut icon"]');
+
+      // console.log({ image });
+      // console.log(icon[0]);
+      // console.log({ shortcutIcon });
+
       art.title = $('meta[property="og:title"]').attr('content');
       art.image = $('meta[property="og:image"]').attr('content');
 

@@ -15,7 +15,8 @@ const origin = [
   'http://localhost:3000',
   'https://tagit-api.herokuapp.com',
   'https://tagit-client.herokuapp.com',
-  'http://tagit.dev.io:3000'
+  'https://tagit.io',
+  'https://www.tagit.io'
 ];
 
 app.use(cors({
