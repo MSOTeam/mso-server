@@ -45,15 +45,11 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
     });
 
     request(req.body.url, function (error, response, responseHtml) {
-      var resObj = {};
-
       //if there was an error
       if (error) {
         res.status(500).send(error);
         return;
       }
-
-      $ = cheerio.load(responseHtml);
 
       const art = new Article();
 
@@ -61,44 +57,15 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
       art.tags = JSON.parse(req.body.tags);
       art.url = url;
 
-      // var image = $('meta[property="og:image"]').attr('content');
-      // var icon = $('link[rel="icon"]');
-      // var shortcutIcon = $('link[rel="shortcut icon"]');
+      try {
+        $ = cheerio.load(responseHtml);
+        art.title = $('meta[property="og:title"]').attr('content');
+        art.image = $('meta[property="og:image"]').attr('content');
+      } 
+      catch(e) {      
+      }
 
-      // console.log({ image });
-      // console.log(icon[0]);
-      // console.log({ shortcutIcon });
-
-      art.title = $('meta[property="og:title"]').attr('content');
-      art.image = $('meta[property="og:image"]').attr('content');
-
-    // });  
-
-    // JSDOM.fromURL(req.body.url, {}).then(dom => {
-    //   const document = dom.window.document;
-    //   // const readabilityArticle = new Readability(document).parse();
-
-    //   extract(url).then((article) => {
-    //     const art = new Article();
-    //     art.user = req.user._id;
-    //     //art.title = readabilityArticle.title;
-    //     // art.content = readabilityArticle.content;
-    //     // art.original = readabilityArticle.content;
-    //     art.tags = JSON.parse(req.body.tags);
-    //     art.url = url;
-
-    //     console.log(article);
-    //     if(article) {
-    //       art.title = article.title;
-    //       art.image = article.image;
-    //       art.length = article.duration;
-    //     }
-
-    //     // art.on('index', function (err) {
-    //     //   if (err) console.error(err);
-    //     // })
-
-        art.save(
+      art.save(
           (err) => {
             if (err) {
               if(err.code === 11000) {
@@ -112,9 +79,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
             io.emit('article', { socket:  "new article" });
             res.send({ art });
           }
-        );
-      // });
-    // });
+      );
   });
 
   return;
