@@ -5,6 +5,11 @@ const router  = express.Router();
 const Article = require('../models/article');
 const Tag = require('../models/tag');
 
+// const createDOMPurify = require('dompurify');
+// const { JSDOM } = require('jsdom');
+// const window = new JSDOM('').window;
+// const DOMPurify = createDOMPurify(window);
+
 router.get('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
     Tag.find({user: req.user._id}, 'tag', (err, tags) => {
         if (err) {
@@ -16,7 +21,8 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res, nex
 
 router.post('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
     const tags = [];
-    JSON.parse(req.body.tags).forEach(tag => {
+    JSON.parse(req.body.tags).forEach(dirty => {
+      let tag = dirty.toLocaleLowerCase();
       tags.push({ user: req.user._id, tag });
     });
 
@@ -29,7 +35,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res, ne
 
 router.put('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
 
-  const { tag, newTag } = req.body;
+  let { tag, newTag } = req.body;
   const user = req.user.id;
 
   // Tag.findOneAndUpdate({ user, tag }, { tag: newTag })
@@ -49,34 +55,74 @@ router.put('/', passport.authenticate('jwt', { session: false }), (req, res, nex
 
   var promises = [];
 
-  Tag.findOneAndUpdate({ tag }, { tag: newTag })
-  .then(() => {
-    Article.find({ user, tags: tag }, (err, articles) => {
-      articles.map(article => {
-        const { _id, tags } = article;      
+  if(!newTag) {
+    newTag = 'archive';
+    
+    Tag.findOneAndDelete({ user, tag })
+    .then(() => {
 
-        tags[tags.indexOf(tag)] = newTag;
-        var promise = new Promise((resolve, reject) => {
-          Article.findByIdAndUpdate({ _id }, { $set: { tags }}).then((condition, update, options) => {
-            resolve(update);
-          })
+      Article.find({ user, tags: tag }, (err, articles) => {
+        articles.map(article => {
+          const { _id } = article;     
+          const tags = ['archive'];      
+
+          var promise = new Promise((resolve, reject) => {
+            Article.findByIdAndUpdate({ _id }, { $set: { tags }}).then((condition, update, options) => {
+              resolve(update);
+            })
+          });
+
+          promises.push(promise);
         });
+      })
+      .then(() => {      
+        Promise.all(promises).then(values => {
+          var io = req.app.get('socketio');;
+          io.emit('article', { socket:  "updated article" });
 
-        promises.push(promise);
+          res.send({ updated: true })
+        });
+      })
+    })
+    .catch((error) => {
+      res.status(500).json(error)
+    });
+
+  }
+  else {
+
+    newTag = newTag.toLocaleLowerCase();
+
+    Tag.findOneAndUpdate({ user, tag }, { tag: newTag })
+    .then(() => {
+      Article.find({ user, tags: tag }, (err, articles) => {
+        articles.map(article => {
+          const { _id, tags } = article;      
+
+          tags[tags.indexOf(tag)] = newTag;
+          var promise = new Promise((resolve, reject) => {
+            Article.findByIdAndUpdate({ _id }, { $set: { tags }}).then((condition, update, options) => {
+              resolve(update);
+            })
+          });
+
+          promises.push(promise);
+        });
+      })
+      .then(() => {      
+        Promise.all(promises).then(values => {
+          var io = req.app.get('socketio');;
+          io.emit('article', { socket:  "updated article" });
+
+          res.send({ updated: true })
+        });
       });
     })
-    .then(() => {      
-      Promise.all(promises).then(values => {
-        var io = req.app.get('socketio');;
-        io.emit('article', { socket:  "updated article" });
-
-        res.send({ updated: true })
-      });
+    .catch((error) => {
+      res.status(500).json(error)
     });
-  })
-  .catch((error) => {
-    res.status(500).json(error)
-  });
+
+  }
   
 });
 
