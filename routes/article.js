@@ -25,11 +25,9 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
     const url = req.body.url;
 
     const tags = [];
-    const articleTags = [];
     JSON.parse(req.body.tags).forEach(tag => {
       // let tag = dirty.toLocaleLowerCase();
       tags.push({ user: req.user._id, tag });
-      articleTags.push(tag);
     });
 
     Tag.create(tags, (err) => {
