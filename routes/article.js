@@ -108,6 +108,7 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
   });
 });
 
+
 router.delete('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   const user = req.user.id;
   const query = { user, tags: 'archive' };
@@ -121,7 +122,6 @@ router.delete('/', passport.authenticate('jwt', {session: false}), (req, res, ne
   );
 
   res.status(200).send('deleted');
-
 });
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
