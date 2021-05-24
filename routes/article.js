@@ -53,8 +53,8 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
       const art = new Article();
 
       art.user = req.user._id;
-      //art.tags = JSON.parse(req.body.tags);
-      art.tags = articleTags;
+      art.tags = JSON.parse(req.body.tags);
+      // art.tags = articleTags;
       art.url = url;
 
       try {
