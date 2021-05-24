@@ -5,6 +5,10 @@ const passport = require('passport');
 // const readability = require('./../utils/readability/index.js');
 var read = require('read-art');
 
+const request = require('request');
+const cheerio = require('cheerio');
+
+
 const { JSDOM } = jsdom;
 // const Readability = readability.Readability;
 // const JSDOMParser = readability.JSDOMParser;
@@ -26,7 +30,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 
     const tags = [];
     JSON.parse(req.body.tags).forEach(tag => {
-      // let tag = dirty.toLocaleLowerCase();
       tags.push({ user: req.user._id, tag });
     });
 
@@ -52,7 +55,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 
       art.user = req.user._id;
       art.tags = JSON.parse(req.body.tags);
-      // art.tags = articleTags;
       art.url = url;
 
       try {
@@ -104,22 +106,6 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
       }
     res.send({ article });
   });
-});
-
-router.delete('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-  const user = req.user.id;
-  const query = { user, tags: 'archive' };
-
-  Article.updateMany(
-    query,
-    { $set: { user : 'deleted' } },
-    (err) => {
-      console.log(err);
-    }
-  );
-
-  res.status(200).send('deleted');
-
 });
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
