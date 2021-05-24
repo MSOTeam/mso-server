@@ -108,6 +108,22 @@ router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next)
   });
 });
 
+router.delete('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  const user = req.user.id;
+  const query = { user, tags: 'archive' };
+
+  Article.updateMany(
+    query,
+    { $set: { user : 'deleted' } },
+    (err) => {
+      console.log(err);
+    }
+  );
+
+  res.status(200).send('deleted');
+
+});
+
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   let query = { user: req.user.id };
   let {tag, text} = req.query;
