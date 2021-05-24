@@ -115,7 +115,7 @@ router.delete('/', passport.authenticate('jwt', {session: false}), (req, res, ne
 
   Article.updateMany(
     query,
-    { $set: { user : 'deleted' } },
+    { $set: { user : new Date().toISOString() } },
     (err) => {
       console.log(err);
     }
