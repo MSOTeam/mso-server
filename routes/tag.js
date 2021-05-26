@@ -77,6 +77,10 @@ router.put('/', passport.authenticate('jwt', { session: false }), (req, res, nex
   const user = req.user.id;
   const query = { user, tags: tag };
 
+  if(tag === newTag) {
+    return;
+  }
+
   if(!newTag) {
 
     Tag.findOneAndDelete({ user, tag })
