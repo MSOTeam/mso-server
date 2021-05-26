@@ -8,7 +8,6 @@ var read = require('read-art');
 const request = require('request');
 const cheerio = require('cheerio');
 
-
 const { JSDOM } = jsdom;
 // const Readability = readability.Readability;
 // const JSDOMParser = readability.JSDOMParser;
@@ -27,6 +26,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
   //     res.status(500).send(err);
   //   }
     const url = req.body.url;
+    const io = req.app.get('socketio');
 
     const tags = [];
     JSON.parse(req.body.tags).forEach(tag => {
@@ -38,9 +38,8 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
         // ignore unique constraint error
         if(err.code !== 11000) {
           res.status(500).send(err);
-        }
-        console.log(err);
-        // res.status(500).send(err);
+        }              
+        io.emit('menu', { socket:  "menu" });
       }
     });
 
@@ -75,7 +74,6 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
                 res.status(500).send(err);
               }
             }
-            var io = req.app.get('socketio');;
             io.emit('article', { socket:  "new article" });
             res.send({ art });
           }
@@ -89,6 +87,23 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 router.put('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
 
   const { article, id } = req.body;
+  const io = req.app.get('socketio');
+
+  const tags = [];
+  article.tags.forEach(tag => {
+      tags.push({ user: req.user._id, tag });
+   });
+
+  Tag.create(tags, (err) => {
+    if (err) {
+      // ignore unique constraint error
+      if(err.code !== 11000) {
+        res.status(500).send(err);
+      }
+      
+      io.emit('menu', { socket:  "menu" });
+    }
+  });
 
   Article.findByIdAndUpdate(
     {
@@ -113,15 +128,11 @@ router.delete('/', passport.authenticate('jwt', {session: false}), (req, res, ne
   const user = req.user.id;
   const query = { user, tags: 'archive' };
 
-  Article.updateMany(
-    query,
-    { $set: { user : new Date().toISOString() } },
-    (err) => {
-      console.log(err);
-    }
-  );
-
-  res.status(200).send('deleted');
+  Article.deleteMany(query).then(function(){
+    res.status(200).send('deleted');
+  }).catch(function(err){
+    res.status(500).send(err)
+  });
 });
 
 router.get('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {

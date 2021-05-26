@@ -33,56 +33,55 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res, ne
     });
 });
 
+const updateArticles = (query, newTag, req, res) => {
+  var promises = [];
+
+  Article.find(query, (err, articles) => {
+    articles.map(article => {
+      const { _id } = article;
+      let { tags } = article;
+      
+      if(newTag === 'archive') {
+        if(tags.length === 1) {
+          tags = ['archive'];
+        } else {
+          tags.splice(tags.indexOf(query.tags), 1);
+        }
+      } else {
+        tags[tags.indexOf(query.tags)] = newTag;
+      }
+            
+      var promise = new Promise((resolve, reject) => {
+        Article.findByIdAndUpdate({ _id }, { $set: { tags }}).then((condition, update, options) => {
+          resolve(update);
+        })
+      });
+
+      promises.push(promise);
+    });
+  })
+  .then(() => {      
+    Promise.all(promises).then(values => {
+      var io = req.app.get('socketio');;
+      io.emit('article', { socket:  "updated article" });
+      io.emit('menu', { socket:  "menu" });
+
+      res.send({ updated: true })
+    });
+  })
+}
+
 router.put('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
 
   let { tag, newTag } = req.body;
   const user = req.user.id;
-
-  // Tag.findOneAndUpdate({ user, tag }, { tag: newTag })
-  // .then(() => {      
-  //   // Article.updateMany({ user, tag }, {"$set":{"tag": newTag}})
-  //   // .then((updated) =>  {
-  //   //   console.log(updated);
-  //   //   res.send({ updated })
-  //   // });
-  // })
-  // .catch((error) => {
-  //   console.log(error);
-  //   res.status(500).json(error)
-  // });
-
-  // console.log({ user, tag, newTag });
-
-  var promises = [];
+  const query = { user, tags: tag };
 
   if(!newTag) {
-    newTag = 'archive';
-    
+
     Tag.findOneAndDelete({ user, tag })
-    .then(() => {
-
-      Article.find({ user, tags: tag }, (err, articles) => {
-        articles.map(article => {
-          const { _id } = article;     
-          const tags = ['archive'];      
-
-          var promise = new Promise((resolve, reject) => {
-            Article.findByIdAndUpdate({ _id }, { $set: { tags }}).then((condition, update, options) => {
-              resolve(update);
-            })
-          });
-
-          promises.push(promise);
-        });
-      })
-      .then(() => {      
-        Promise.all(promises).then(values => {
-          var io = req.app.get('socketio');;
-          io.emit('article', { socket:  "updated article" });
-
-          res.send({ updated: true })
-        });
-      })
+    .then(() => {      
+      updateArticles(query, 'archive', req, res);
     })
     .catch((error) => {
       res.status(500).json(error)
@@ -91,37 +90,62 @@ router.put('/', passport.authenticate('jwt', { session: false }), (req, res, nex
   }
   else {
 
-    newTag = newTag.toLocaleLowerCase();
+    // newTag = newTag.toLocaleLowerCase();
 
-    Tag.findOneAndUpdate({ user, tag }, { tag: newTag })
-    .then(() => {
-      Article.find({ user, tags: tag }, (err, articles) => {
-        articles.map(article => {
-          const { _id, tags } = article;      
+    Tag.findOne({ user, tag: newTag }, 'tag', (err, currentTag) => {
+      if (err) {
+        res.status(500).send(err)
+      }
 
-          tags[tags.indexOf(tag)] = newTag;
-          var promise = new Promise((resolve, reject) => {
-            Article.findByIdAndUpdate({ _id }, { $set: { tags }}).then((condition, update, options) => {
-              resolve(update);
-            })
-          });
-
-          promises.push(promise);
+      if(currentTag) {        
+        Tag.findOneAndDelete({ user, tag })
+        .then(() => {
+          updateArticles(query, newTag, req, res);
+        })
+        .catch((error) => {
+          res.status(500).json(error)
         });
-      })
-      .then(() => {      
-        Promise.all(promises).then(values => {
-          var io = req.app.get('socketio');;
-          io.emit('article', { socket:  "updated article" });
+      } else {
+        Tag.findOneAndUpdate({ user, tag }, { tag: newTag })
+        .then(() => {
+          updateArticles(query, newTag, req, res);
+        });    
+      }
 
-          res.send({ updated: true })
-        });
-      });
     })
     .catch((error) => {
       res.status(500).json(error)
     });
 
+
+    // Tag.findOneAndUpdate({ user, tag }, { tag: newTag })
+    // .then(() => {
+    //   Article.find({ user, tags: tag }, (err, articles) => {
+    //     articles.map(article => {
+    //       const { _id, tags } = article;      
+
+    //       tags[tags.indexOf(tag)] = newTag;
+    //       var promise = new Promise((resolve, reject) => {
+    //         Article.findByIdAndUpdate({ _id }, { $set: { tags }}).then((condition, update, options) => {
+    //           resolve(update);
+    //         })
+    //       });
+
+    //       promises.push(promise);
+    //     });
+    //   })
+    //   .then(() => {      
+    //     Promise.all(promises).then(values => {
+    //       var io = req.app.get('socketio');;
+    //       io.emit('article', { socket:  "updated article" });
+
+    //       res.send({ updated: true })
+    //     });
+    //   });
+    // })
+    // .catch((error) => {
+    //   res.status(500).json(error)
+    // });
   }
   
 });
