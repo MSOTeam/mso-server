@@ -5,17 +5,28 @@
         "start": "node index"
     },
     "dependencies": {
-        "article-parser": "^4.2.3",
+        "@mozilla/readability": "^0.4.1",
+        "article-parser": "^4.2.10",
         "bcrypt-nodejs": "0.0.3",
         "body-parser": "^1.19.0",
-        "cheerio": "^0.20.0",
+        "cheerio": "^0.22.0",
         "cors": "^2.8.5",
-        "dompurify": "^2.2.8",
+        "dompurify": "^2.3.1",
         "express": "^4.17.1",
-        "helmet": "^4.1.1",
-        "jsdom": "^16.4.0",
+        "helmet": "^4.6.0",
+        "jsdom": "^17.0.0",
         "jsonwebtoken": "^8.5.1",
-        "mongoose": "^5.10.7",
+        "metascraper": "^5.24.2",
+        "metascraper-author": "^5.24.2",
+        "metascraper-clearbit": "^5.24.2",
+        "metascraper-date": "^5.24.2",
+        "metascraper-description": "^5.24.2",
+        "metascraper-image": "^5.24.2",
+        "metascraper-logo": "^5.24.2",
+        "metascraper-publisher": "^5.24.2",
+        "metascraper-title": "^5.24.2",
+        "metascraper-url": "^5.24.2",
+        "mongoose": "^5.13.7",
         "passport": "^0.4.1",
         "passport-facebook-token": "^4.0.0",
         "passport-google-token": "^0.1.2",
@@ -23,6 +34,6 @@
         "passport-local": "^1.0.0",
         "read-art": "^0.5.6",
         "request": "^2.88.0",
-        "socket.io": "^2.3.0"
+        "socket.io": "^4.1.3"
     }
 }
