@@ -58,8 +58,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next
 
       try {
         $ = cheerio.load(responseHtml);
-        $$ = cheerio.load(body);
-        art.title = $$("title").text();
+        art.title = $('meta[property="og:title"]').attr('content');
         art.image = $('meta[property="og:image"]').attr('content');
       } 
       catch(e) {      
